@@ -1,0 +1,3 @@
+import { motion } from 'motion/react'
+import './PersonalArchive.css'
+export function PersonalArchive() { return <section className="personal-archive-section" aria-labelledby="archive-title"><motion.div initial={{ opacity: 0, y: 35 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ duration: 0.7 }}><p className="portfolio-app__eyebrow">05 / Personal archive</p><h2 id="archive-title" className="portfolio-app__section-title">More fragments, soon.</h2><div className="personal-archive-section__types"><span>Photography</span><span>Travel</span><span>Personal experiments</span></div></motion.div></section> }

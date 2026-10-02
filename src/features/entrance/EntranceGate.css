@@ -1,0 +1,155 @@
+.entrance-gate {
+  --frame-inline: clamp(0.9rem, 2.15vw, 1.85rem);
+  --frame-block: clamp(0.78rem, 1.8vw, 1.5rem);
+  --inner-inline: clamp(0.35rem, 0.8vw, 0.7rem);
+  --metal-dark: #56605f;
+  --metal-mid: #9da7a5;
+  --metal-light: #e9edeb;
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+}
+
+.entrance-gate__trigger {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.entrance-gate__trigger:focus-visible { outline: 2px solid #f5ffff; outline-offset: -0.45rem; }
+.entrance-gate__moving-area { position: absolute; inset: var(--frame-block) var(--frame-inline); overflow: clip; }
+
+.entrance-gate__leaf {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 50.1%;
+  overflow: hidden;
+  transition: transform 1020ms cubic-bezier(0.22, 0.76, 0.26, 1);
+  will-change: transform;
+}
+
+.entrance-gate__leaf--left { inset-inline-start: 0; transform-origin: left center; }
+.entrance-gate__leaf--right { inset-inline-end: 0; transform-origin: right center; }
+.entrance-gate--open .entrance-gate__leaf--left { transform: translateX(-18%) scaleX(0.3); }
+.entrance-gate--open .entrance-gate__leaf--right { transform: translateX(18%) scaleX(0.3); }
+
+.entrance-gate__panel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-inline: 1px solid rgb(239 243 240 / 88%);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgb(57 66 65 / 62%);
+}
+
+.entrance-gate__rods {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: var(--inner-inline);
+  pointer-events: none;
+}
+
+.entrance-gate__rod {
+  position: relative;
+  position: absolute;
+  inset-block: 0;
+  inline-size: clamp(0.36rem, 0.68vw, 0.6rem);
+  inset-inline-start: var(--rod-position);
+  transform: translateX(-50%);
+  border: 1px solid #59615f;
+  border-radius: 0.18rem;
+  background: linear-gradient(90deg, #66706e, #edf1ee 42%, #a8b1af 57%, #626b69);
+  box-shadow: inset 1px 0 rgb(255 255 255 / 78%), inset -1px 0 rgb(42 50 49 / 36%), 0 0.08rem 0.18rem rgb(30 38 37 / 22%);
+}
+
+.entrance-gate__scissor-assembly {
+  position: absolute;
+  z-index: 1;
+  inset-block: 5%;
+  inset-inline: var(--inner-inline);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.entrance-gate__lattice {
+  display: block;
+  inline-size: 100%;
+  block-size: 23%;
+}
+
+.entrance-gate__lattice-line {
+  stroke-width: clamp(0.34rem, 0.62vw, 0.56rem);
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0.08rem 0.12rem rgb(30 38 37 / 28%));
+}
+
+.entrance-gate__lattice-rivet {
+  fill: #aeb7b4;
+  stroke: #4e5755;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0.06rem 0.1rem rgb(30 38 37 / 32%));
+}
+
+.entrance-gate__handle {
+  position: absolute;
+  z-index: 3;
+  inset-block-start: 46%;
+  inline-size: clamp(0.62rem, 1.15vw, 0.92rem);
+  block-size: clamp(3.5rem, 10vw, 7.2rem);
+  border: 1px solid #4f5857;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #626b69, #eef2ef 47%, #6c7573);
+  box-shadow: inset 1px 0 rgb(255 255 255 / 78%), 0 0.15rem 0.3rem rgb(37 44 43 / 30%);
+}
+
+.entrance-gate__leaf--left .entrance-gate__handle { inset-inline-end: clamp(0.35rem, 0.8vw, 0.8rem); }
+.entrance-gate__leaf--right .entrance-gate__handle { inset-inline-start: clamp(0.35rem, 0.8vw, 0.8rem); }
+
+.entrance-gate__frame { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
+
+.entrance-gate__frame-top,
+.entrance-gate__frame-bottom,
+.entrance-gate__frame-side {
+  position: absolute;
+  display: block;
+  background:
+    radial-gradient(circle at 1rem 50%, #f3f6f3 0 0.12rem, #5b6563 0.14rem 0.19rem, transparent 0.21rem) 0 50% / 2.25rem 100% repeat-x,
+    linear-gradient(to bottom, #e4e9e6, #9ea8a5 37%, #c4ccc8 57%, #66706e 100%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 84%), inset 0 -1px rgb(41 49 48 / 45%), 0 0.16rem 0.35rem rgb(37 44 43 / 26%);
+}
+
+.entrance-gate__frame-top,
+.entrance-gate__frame-bottom { inset-inline: 0; block-size: var(--frame-block); }
+.entrance-gate__frame-top { inset-block-start: 0; }
+.entrance-gate__frame-bottom { inset-block-end: 0; }
+
+.entrance-gate__frame-side {
+  inset-block: 0;
+  inline-size: var(--frame-inline);
+  background:
+    radial-gradient(circle at 50% 1.15rem, #f3f6f3 0 0.12rem, #5b6563 0.14rem 0.19rem, transparent 0.21rem) 50% 0 / 100% 2.25rem repeat-y,
+    linear-gradient(to right, #66706e, #ccd4d0 43%, #9fa9a6 72%, #e4e9e6);
+}
+
+.entrance-gate__frame-side--left { inset-inline-start: 0; }
+.entrance-gate__frame-side--right { inset-inline-end: 0; }
+
+@media (max-width: 48rem) {
+  .entrance-gate { --frame-inline: clamp(0.66rem, 3.1vw, 1rem); --frame-block: clamp(0.6rem, 2.7vw, 0.9rem); }
+  .entrance-gate { --inner-inline: 0.25rem; }
+  .entrance-gate__rod { inline-size: clamp(0.3rem, 1.05vw, 0.45rem); }
+  .entrance-gate--open .entrance-gate__leaf--left { transform: translateX(-14%) scaleX(0.34); }
+  .entrance-gate--open .entrance-gate__leaf--right { transform: translateX(14%) scaleX(0.34); }
+}
+
+@media (prefers-reduced-motion: reduce) { .entrance-gate__leaf { transition-duration: 1ms; } }

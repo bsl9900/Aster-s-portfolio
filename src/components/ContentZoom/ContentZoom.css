@@ -1,0 +1,22 @@
+.content-zoom {
+  touch-action: pan-y;
+}
+
+.content-zoom__canvas {
+  zoom: var(--content-zoom);
+}
+
+.content-zoom__reset {
+  position: fixed;
+  z-index: 60;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  min-width: 3.5rem;
+  min-height: 2.75rem;
+  border: 1px solid #888;
+  border-radius: 0.35rem;
+  background: linear-gradient(#fff, #dedede);
+  color: #171717;
+  font: 600 0.875rem Tahoma, sans-serif;
+  cursor: pointer;
+}

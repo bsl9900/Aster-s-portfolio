@@ -1,0 +1,4 @@
+.portfolio-app { overflow: clip; background: #f5f4ef; color: #171717; }
+.portfolio-app__eyebrow { margin: 0 0 1rem; color: #74716b; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; }
+.portfolio-app__section-title { max-inline-size: 12ch; margin: 0; font-size: clamp(2.5rem, 7vw, 7rem); font-weight: 600; letter-spacing: -0.075em; line-height: 0.88; }
+.portfolio-app__copy { color: #5d5a55; font-size: clamp(1rem, 1.4vw, 1.2rem); line-height: 1.55; }

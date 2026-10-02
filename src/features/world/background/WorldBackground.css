@@ -1,0 +1,28 @@
+.world-background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: clip;
+  background: #e9f8ff;
+  pointer-events: none;
+}
+
+.world-background__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: var(--world-background-position);
+}
+
+.world-background__ripple {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 48rem) {
+  .world-background__image {
+    object-position: var(--world-background-position-mobile);
+  }
+}

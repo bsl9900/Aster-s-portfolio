@@ -1,25 +1,407 @@
-# 项目协作说明
+# Personal Digital World
 
-## Day 1 基础范围
+## Project Collaboration Guidelines
 
-本仓库正在建立「Personal Digital World」的基础资料。当前阶段只维护已明确指定的舞台（stage）与相关文档、资源目录；未被点名的页面、组件、依赖、构建配置和内容不得进行大范围重写。
+This repository is building a personal interactive digital portfolio world.
 
-## 产品结构原则
+The website is not a traditional portfolio website.
 
-- 网站由稳定的 **Website Shell**（导航、舞台、容器与基础交互框架）和可替换的 **Content**（文字、作品、照片、旅行记录、广告素材）组成。
-- 内容与展示模块保持模块化，资源应可替换，不把某个具体素材、文案或栏目数据硬编码成不可复用的页面结构。
-- Portfolio、Photography、Travel Diary 是彼此独立的内容空间；它们可以共享 Shell 与布局规则，但不应被合并为同一类内容。
-- 后续广告采用可复用的 advertisement system，而不是为每一张广告制作一次性、耦合页面的实现。
+It is a personal digital environment that combines:
 
-## 前端实现边界（后续开发适用）
+- personal identity
+- design portfolio
+- photography archive
+- travel diary
+- digital memories
+- interactive exploration
 
-- 桌面与移动端使用同一组 React components 和 CSS，通过响应式规则调整编排；不要为同一界面维护两套平行实现。
-- 先保持 Shell、内容模块和资源目录之间的清晰边界，再添加交互或视觉细节。
-- 每次改动聚焦于需求明确的 stage，避免未经授权的全站视觉重构、依赖替换或目录迁移。
+The user should feel like entering a private digital world rather than browsing a normal website.
 
-## 视觉与资源约束
+---
 
-- 详细视觉原则见 `VISUAL-DIRECTION.md`。
-- `REFERENCES/` 中的图片只作为观察和方向参考，**不得直接复制其画面、版式或受保护的具体设计**。
-- `ASSETS/` 下按内容类型存放可替换资源：`navigation/`、`advertisements/`、`portfolio/`、`photography/`、`travel-diary/`。
-- 主入口的金属伸缩门是从中央向左、右两侧开启的实体大门，绝不是卷帘门（roller shutter）。
+# 1. Core Product Concept
+
+The experience structure:
+
+Entrance World
+↓
+Interactive Digital Space
+↓
+Personal Archives
+
+Main spaces:
+
+1. 2026 Portfolio Archive
+2. Photography Archive
+3. Travel Diary Archive
+
+These are independent content worlds.
+
+They share the same Website Shell but must not be merged.
+
+---
+
+# 2. Website Architecture
+
+The project consists of two major layers:
+
+## Website Shell
+
+Stable interactive environment:
+
+- entrance gate
+- background world
+- navigation system
+- desktop/window framework
+- interaction system
+- responsive behavior
+
+## Content Modules
+
+Replaceable personal content:
+
+- portfolio projects
+- photos
+- travel records
+- advertisements
+- personal information
+
+Content should be data-driven and modular.
+
+Do not hard-code specific content directly into reusable components.
+
+---
+
+# 3. Visual Direction
+
+## Overall Style
+
+The visual direction is:
+
+Y2K digital nostalgia +
+early internet aesthetics +
+Windows XP era memory +
+future virtual environment.
+
+The world should feel like:
+
+"a personal computer world from the future imagined in the early 2000s."
+
+## Important Visual Keywords
+
+Use:
+
+- Y2K interface
+- early internet graphics
+- Windows XP nostalgia
+- digital dreamscape
+- virtual desktop world
+- glossy interface
+- soft futuristic atmosphere
+- playful digital artifacts
+
+## Avoid
+
+Do NOT interpret this project as:
+
+- modern SaaS website
+- Apple minimal website
+- corporate portfolio website
+- empty futuristic showroom
+- generic blue gradient landing page
+
+The project should not become overly clean or empty.
+
+The richness comes from:
+
+- interactive objects
+- interface elements
+- digital memories
+- small visual details
+
+Not from simply adding large decorative graphics.
+
+---
+
+# 4. Entrance World
+
+The entrance is a physical-to-digital transition.
+
+The main entrance element:
+
+A retractable metal gate.
+
+Requirements:
+
+- NOT a roller shutter.
+- It is a realistic expandable gate.
+- Opens from the center toward left and right.
+- Left and right outer frames remain fixed.
+- Opening animation should feel like a real physical gate.
+
+The gate should have:
+
+- metallic texture
+- 2.5D depth
+- realistic lighting
+- visible background through the gaps
+
+Do not make it:
+
+- flat geometric bars
+- wooden fence
+- solid wall
+- full opaque panel
+
+---
+
+# 5. Background World
+
+Behind the gate is the Personal Digital World.
+
+It is NOT a simple background.
+
+The environment should contain:
+
+## Atmosphere
+
+The world should feel translucent and bright, but not empty.
+
+Maintain white-blue transparency while allowing layered digital details, nostalgic internet elements, and environmental depth.
+
+## Ground
+
+Inspired by Windows XP grass memory.
+
+Important:
+
+Do NOT copy Windows XP wallpaper.
+
+Use:
+
+- digital grass
+- soft green landscape
+- curved terrain
+- virtual meadow feeling
+
+Do NOT include:
+
+- blue sky
+- clouds
+- realistic outdoor photography
+
+The ground should feel like:
+
+"a digital recreation of nature inside a computer world."
+
+---
+
+# 6. Interactive Objects
+
+The main world will gradually contain interactive objects.
+
+Examples:
+
+- folders
+- windows
+- icons
+- stickers
+- advertisements
+- digital artifacts
+
+Objects should feel placed inside the world.
+
+Avoid traditional website buttons.
+
+---
+
+# 7. Main Archive Entrances
+
+Three main clickable objects:
+
+## 2026 Portfolio Archive
+
+Possible visual language:
+
+- Windows folder
+- archive file
+- digital document
+- software window
+
+## Photography Archive
+
+Possible visual language:
+
+- photo library
+- camera system
+- image viewer
+
+## Travel Diary Archive
+
+Possible visual language:
+
+- map database
+- travel file
+- digital journal
+
+They should behave like objects in a desktop world.
+
+---
+
+# 8. Window System
+
+Secondary pages should not feel like normal webpage navigation.
+
+Preferred interaction:
+
+Desktop object
+↓
+Click
+↓
+Windows-style window opens
+↓
+Content appears inside
+
+The window system should support:
+
+- draggable feeling
+- expandable content
+- archive browsing
+
+---
+
+# 9. Responsive Requirements
+
+Desktop and mobile share the same React components.
+
+Do not create separate versions.
+
+Important:
+
+The digital world should adapt without destroying composition.
+
+For example:
+
+Gate:
+
+- maintain proportions
+- adjust repeated modules
+- never stretch individual elements
+
+Avoid:
+
+- distorted gate
+- broken connections
+- compressed background
+- collapsed layouts
+
+---
+
+# 10. Development Rules
+
+Before changing existing systems:
+
+Understand current architecture.
+
+Do not:
+
+- rewrite the whole project
+- replace dependencies
+- reorganize folders
+- redesign unrelated components
+
+Every task should focus on the requested stage.
+
+---
+
+# 11. Development Stages
+
+## Stage 1
+
+Build:
+
+- gate system
+- opening animation
+- basic world container
+- responsive foundation
+
+## Stage 2
+
+Build:
+
+- richer digital environment
+- grass landscape
+- atmosphere
+- first interactive objects
+
+## Stage 3
+
+Build:
+
+- archive entrances
+- Windows-style content windows
+- portfolio/photo/travel modules
+
+Future stages:
+
+- advertisement system
+- personal information stickers
+- deeper interactions
+
+---
+
+# 12. Asset Management
+
+Assets should be organized:
+
+ASSETS/
+
+navigation/
+advertisements/
+portfolio/
+photography/
+travel-diary/
+background/
+objects/
+
+Reference images:
+
+REFERENCES/
+
+are only for:
+
+- visual direction
+- atmosphere
+- material reference
+
+Do not directly copy protected layouts or designs.
+
+---
+
+# 13. Coding Philosophy
+
+Prioritize:
+
+1. Stable architecture
+2. Replaceable content
+3. Smooth interaction
+4. Visual consistency
+
+Do not optimize only for speed of implementation.
+
+This project is an interactive personal world, not just a webpage.
+
+---
+
+# 14. Locked Gate Module and CSS Isolation
+
+Fence / Gate is a locked visual module. Unless the user explicitly requests a
+gate change, do not modify Gate component, Gate stylesheet, Gate geometry, Gate
+animation, responsive sizing, or visual parameters. New modules must adapt
+around the existing Gate rather than changing it.
+
+New module styles must be scoped to their own component namespace and must not
+use broad global selectors that can affect Gate. In particular, do not introduce
+unscoped rules for `img`, `svg`, `canvas`, `button`, `.window`, `.scene`, or a
+universal selector. Any reset or component-specific adjustment must remain
+inside that module's namespace.

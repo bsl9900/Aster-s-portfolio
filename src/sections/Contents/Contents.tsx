@@ -1,0 +1,4 @@
+import { motion } from 'motion/react'
+import './Contents.css'
+const entries = ['喜马拉雅', '要出发', '音乐能量岛', '小睡眠', '心遇']
+export function Contents() { return <section className="contents-section" aria-labelledby="contents-title"><div className="contents-section__heading"><p className="portfolio-app__eyebrow">02 / Contents</p><h2 id="contents-title" className="portfolio-app__section-title">Selected projects</h2></div><div className="contents-section__slot" aria-label="Project directory">{entries.map((name, index) => <motion.a key={name} href={`#project-${index + 1}`} className="contents-section__card" initial={{ opacity: 0, y: 150, rotate: index % 2 ? 3 : -3 }} whileInView={{ opacity: 1, y: 0, rotate: index % 2 ? 1.5 : -1.5 }} viewport={{ once: true, amount: 0.4 }} transition={{ type: 'spring', stiffness: 160, damping: 18, delay: index * 0.11 }}><span>{String(index + 1).padStart(2, '0')}</span><strong>{name}</strong><i>View project ↘</i></motion.a>)}</div></section> }

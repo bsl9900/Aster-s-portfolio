@@ -1,0 +1,4 @@
+@font-face { font-family: 'Rascal'; src: url('../../assets/fonts/RASCAL__.TTF') format('truetype'); font-display: swap; }
+.tech-text { position: relative; width: 100%; height: 100%; touch-action: pan-y; user-select: none; }
+.tech-text-canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
+@media (prefers-reduced-motion: reduce) { .tech-text-canvas { cursor: default; } }

@@ -1,0 +1,31 @@
+.hero-computer-views {
+  position: relative;
+  display: block;
+  width: 100%;
+  isolation: isolate;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+.hero-computer-views__front,
+.hero-computer-views__angle {
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: plus-lighter;
+}
+.hero-computer-views__angle {
+  position: absolute;
+  display: block;
+  height: auto;
+  max-width: none;
+}
+/* Align opaque body height and center to the original PNG; no image stretching. */
+.hero-computer-views__angle--left {
+  width: 91.8%;
+  left: 4.37%;
+  top: -2.22%;
+}
+.hero-computer-views__angle--right {
+  width: 93.4%;
+  left: 5.88%;
+  top: -4.87%;
+}

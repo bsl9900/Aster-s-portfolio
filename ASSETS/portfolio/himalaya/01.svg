@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-label="Himalaya placeholder image 01">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#183657"/><stop offset=".5" stop-color="#3a7694"/><stop offset="1" stop-color="#a6dfe2"/></linearGradient></defs>
+  <rect width="1200" height="760" fill="url(#g)"/><path d="M0 590 220 370l145 134 195-274 207 258 189-175 244 277v170H0Z" fill="#d7f0df" opacity=".9"/><path d="M0 645 250 475l165 126 130-170 192 171 201-144 262 174v128H0Z" fill="#f6fbef" opacity=".82"/><text x="74" y="110" fill="#e9fcff" font-family="Arial, sans-serif" font-size="28" letter-spacing="8">HIMALAYA / 01</text><text x="74" y="660" fill="#173650" font-family="Arial, sans-serif" font-size="80" font-weight="700">SOUND IN MOTION</text>
+</svg>
