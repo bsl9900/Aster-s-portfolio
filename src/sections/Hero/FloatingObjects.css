@@ -13,7 +13,12 @@
   inline-size: var(--floating-size-desktop);
   transform-origin: center;
   will-change: transform;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: pan-y;
 }
+
+.hero-floating__item--held { cursor: grabbing; }
 
 .hero-floating__image {
   display: block;
@@ -23,10 +28,30 @@
   user-select: none;
 }
 
+.hero-floating__gravity-control {
+  position: absolute;
+  z-index: 2;
+  inset-inline-end: 0.8rem;
+  inset-block-end: 0.9rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid rgb(255 255 255 / 0.72);
+  border-radius: 999px;
+  background: rgb(33 117 178 / 0.46);
+  color: white;
+  font: 600 0.7rem/1 system-ui, sans-serif;
+  box-shadow: 0 0.35rem 0.8rem rgb(29 106 163 / 0.18);
+  backdrop-filter: blur(0.4rem);
+}
+
+.hero-floating__gravity-control:disabled { opacity: 0.74; }
+
 @media (max-width: 1199px) {
   .hero-floating__item { inline-size: var(--floating-size-tablet); }
 }
 
 @media (max-width: 767px) {
   .hero-floating__item { inline-size: var(--floating-size-mobile); }
+  .hero-floating__item { cursor: default; }
+  /* Restrict only object-started gestures; blank Hero space retains swipe. */
+  .hero-floating__item { touch-action: none; }
 }

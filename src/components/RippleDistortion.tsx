@@ -35,6 +35,7 @@ const MAX_WAVES = 100
 const QUALITY_SCALE: Record<RippleQuality, number> = { low: 0.4, medium: 0.7, high: 1 }
 const START_SCALE = 1.5
 const LIFE_CONSTANT = Math.log(500)
+const DEFAULT_COVER_POSITION: [number, number] = [0.5, 0.5]
 
 const waveVertex = `
 precision highp float;
@@ -127,7 +128,7 @@ export function RippleDistortion({
   quality = 'low',
   enabled = true,
   overlay = false,
-  coverPosition = [0.5, 0.5],
+  coverPosition = DEFAULT_COVER_POSITION,
   className = '',
   onReady,
   onError,
@@ -142,16 +143,25 @@ export function RippleDistortion({
     const mount = mountRef.current
     if (!mount || !enabled) return
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
     let renderer: Renderer
     // OGL augments its WebGL context with renderer/canvas metadata at runtime.
     let gl: any
     let canvas: HTMLCanvasElement
     try {
-      renderer = new Renderer({ alpha: true, antialias: false, dpr: Math.min(window.devicePixelRatio || 1, 2) })
+      renderer = new Renderer({
+        alpha: true,
+        antialias: false,
+        premultipliedAlpha: false,
+        dpr,
+      })
       gl = renderer.gl
       gl.clearColor(0, 0, 0, 0)
       canvas = gl.canvas as HTMLCanvasElement
       canvas.style.cssText = 'width:100%;height:100%;display:block;opacity:0;transition:opacity 160ms ease;'
+      // A renderer is always scoped to this mount. Remove a stale canvas first
+      // as a defensive guard for mobile resize/orientation edge cases.
+      mount.querySelectorAll('canvas').forEach((staleCanvas) => staleCanvas.remove())
       mount.appendChild(canvas)
     } catch {
       onError?.()

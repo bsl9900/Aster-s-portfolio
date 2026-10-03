@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
 import heroBackground from '../../assets/background/hero-cover.png'
 import { RippleDistortion } from '../../components/RippleDistortion'
 import { TextPressure } from '../../components/TextPressure/TextPressure'
@@ -7,12 +6,11 @@ import { FloatingObjects } from './FloatingObjects'
 import { HeroComputer } from './HeroComputer'
 import './Hero.css'
 
-type Cursor = { x: number; y: number; nx: number; ny: number; active: boolean }
+type Cursor = { x: number; y: number; nx: number; ny: number; active: boolean; pointerType: string }
 
 export function Hero() {
-  const cursor = useRef<Cursor>({ x: -1000, y: -1000, nx: 0, ny: 0, active: false })
-  const [compact, setCompact] = useState(false)
-  const reduceMotion = useReducedMotion()
+  const cursor = useRef<Cursor>({ x: -1000, y: -1000, nx: 0, ny: 0, active: false, pointerType: '' })
+  const [compact, setCompact] = useState(() => window.matchMedia('(max-width: 767px)').matches)
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 767px)')
@@ -26,7 +24,7 @@ export function Hero() {
     window.dispatchEvent(new CustomEvent('portfolio:scene-navigate', { detail: { direction: 'forward' } }))
   }
 
-  return <section className="hero-section" aria-labelledby="hero-title"
+  return <section className="hero-section hero-section--floating-only" aria-labelledby="hero-title"
     onPointerMove={(event) => {
       const rect = event.currentTarget.getBoundingClientRect()
       cursor.current = {
@@ -35,9 +33,16 @@ export function Hero() {
         nx: Math.max(-1, Math.min(1, (event.clientX - rect.left) / rect.width * 2 - 1)),
         ny: Math.max(-1, Math.min(1, (event.clientY - rect.top) / rect.height * 2 - 1)),
         active: true,
+        pointerType: event.pointerType,
       }
     }}
-    onPointerLeave={() => { cursor.current = { x: -1000, y: -1000, nx: 0, ny: 0, active: false } }}
+    onPointerLeave={() => { cursor.current = { x: -1000, y: -1000, nx: 0, ny: 0, active: false, pointerType: '' } }}
+    onPointerUp={(event) => {
+      if (event.pointerType !== 'mouse') cursor.current = { x: -1000, y: -1000, nx: 0, ny: 0, active: false, pointerType: '' }
+    }}
+    onPointerCancel={(event) => {
+      if (event.pointerType !== 'mouse') cursor.current = { x: -1000, y: -1000, nx: 0, ny: 0, active: false, pointerType: '' }
+    }}
   >
     <FloatingObjects cursor={cursor} />
     <RippleDistortion
@@ -59,16 +64,14 @@ export function Hero() {
       highlightColor="#ffffff"
       trigger="hover"
       clickStrength={1.2}
-      quality={compact ? 'low' : 'medium'}
-      enabled
+      quality="medium"
+      enabled={!compact}
     />
-    <div className="hero-section__content">
-      <motion.h1
+    <div className="hero-title-layer">
+      <h1
         id="hero-title"
-        className="hero-section__title"
+        className="hero-title-shell"
         onClick={enterContent}
-        animate={reduceMotion ? { y: 0, rotate: 0, scale: 1 } : { y: [0, -5, 0], rotate: [-0.2, 0.2, -0.2], scale: [1, 1.005, 1] }}
-        transition={{ duration: 5.2, ease: 'easeInOut', repeat: Infinity, repeatType: 'mirror' }}
       >
         <TextPressure
           sharedCursor={cursor}
@@ -79,13 +82,13 @@ export function Hero() {
           width
           weight
           italic={false}
-          textColor="#4FA8FF"
-          strokeColor="#4FA8FF"
+          textColor="rgba(255, 255, 255, 0.82)"
+          strokeColor="#bcecff"
           minFontSize={36}
           widthStrength={58}
           weightStrength={440}
         />
-      </motion.h1>
+      </h1>
     </div>
     <HeroComputer cursor={cursor} />
   </section>

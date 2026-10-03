@@ -1,22 +1,203 @@
-import { useEffect, useRef, RefObject } from 'react'
+import { useEffect, useRef, type CSSProperties, type RefObject } from 'react'
 import './TextPressure.css'
 
-type TextPressureProps = { sharedCursor?: RefObject<{ x: number; y: number }>; text: string; flex?: boolean; alpha?: boolean; stroke?: boolean; width?: boolean; weight?: boolean; italic?: boolean; textColor?: string; strokeColor?: string; minFontSize?: number; widthStrength?: number; weightStrength?: number }
-type LetterState = { width: number; weight: number; italic: number; targetWidth: number; targetWeight: number; targetItalic: number }
+type SharedPointer = {
+  x: number
+  y: number
+  active?: boolean
+  pointerType?: string
+}
 
-export function TextPressure({ sharedCursor, text, flex = true, alpha = false, stroke = false, width = true, weight = true, italic = true, textColor = '#000000', strokeColor = '#000000', minFontSize = 36, widthStrength = 22, weightStrength = 230 }: TextPressureProps) {
-  const rootRef = useRef<HTMLDivElement>(null); const letterRefs = useRef<Array<HTMLSpanElement | null>>([]); const states = useRef<LetterState[]>([]); const mouseRef = useRef({ x: -1000, y: -1000 }); const cursorRef = useRef({ x: -1000, y: -1000 })
+type TextPressureProps = {
+  sharedCursor?: RefObject<SharedPointer>
+  text: string
+  flex?: boolean
+  alpha?: boolean
+  stroke?: boolean
+  width?: boolean
+  weight?: boolean
+  italic?: boolean
+  textColor?: string
+  strokeColor?: string
+  minFontSize?: number
+  widthStrength?: number
+  weightStrength?: number
+}
+
+type PressureMetrics = {
+  centers: Array<{ x: number; y: number }>
+  maxDistance: number
+  strengthScale: number
+}
+
+const BASE_WIDTH = 100
+const MAX_WIDTH = 151
+const BASE_WEIGHT = 600
+const MAX_WEIGHT = 1000
+
+const distanceBetween = (a: { x: number; y: number }, b: { x: number; y: number }) => {
+  const dx = b.x - a.x
+  const dy = b.y - a.y
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
+// React Bits' original distance-to-axis mapping.
+const getAttribute = (distance: number, maxDistance: number, minimum: number, range: number) => {
+  const value = range - Math.abs((range * distance) / Math.max(1, maxDistance))
+  return Math.max(minimum, value + minimum)
+}
+
+const clamp = (value: number, minimum: number, maximum: number) => Math.min(maximum, Math.max(minimum, value))
+
+export function TextPressure({
+  sharedCursor,
+  text,
+  flex = true,
+  alpha = false,
+  stroke = false,
+  width = true,
+  weight = true,
+  italic = true,
+  textColor = 'rgba(255, 255, 255, 0.82)',
+  strokeColor = '#bcecff',
+  minFontSize = 36,
+}: TextPressureProps) {
+  const rootRef = useRef<HTMLDivElement>(null)
+  const letterRefs = useRef<Array<HTMLSpanElement | null>>([])
+  const metricsRef = useRef<PressureMetrics>({ centers: [], maxDistance: 260, strengthScale: 1 })
+  const targetPointerRef = useRef({ x: -1000, y: -1000 })
+  const smoothPointerRef = useRef({ x: -1000, y: -1000 })
+  const localPointerRef = useRef({ active: false, pointerType: '' })
+
   useEffect(() => {
-    const root = rootRef.current; if (!root) return
-    const media = window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)')
-    const reset = () => { states.current = [...text].map(() => ({ width: 100, weight: 500, italic: 0, targetWidth: 100, targetWeight: 500, targetItalic: 0 })) }
-    const resize = () => { const rect = root.getBoundingClientRect(); const size = Math.max(minFontSize, Math.min(rect.width / Math.max(text.length * 0.57, 1), rect.height * 0.78)); root.style.setProperty('--text-pressure-size', `${size}px`); reset() }
-    const observer = new ResizeObserver(resize); observer.observe(root); resize()
-    let animation = 0
-    const frame = () => { if (sharedCursor) mouseRef.current = sharedCursor.current; cursorRef.current.x += (mouseRef.current.x - cursorRef.current.x) * 0.14; cursorRef.current.y += (mouseRef.current.y - cursorRef.current.y) * 0.14; letterRefs.current.forEach((letter, index) => { if (!letter) return; const rect = letter.getBoundingClientRect(); const distance = Math.hypot(cursorRef.current.x - (rect.left + rect.width / 2), cursorRef.current.y - (rect.top + rect.height / 2)); const force = media.matches ? Math.max(0, 1 - distance / 260) : 0; const state = states.current[index]; state.targetWidth = width ? 100 + force * widthStrength : 100; state.targetWeight = weight ? 500 + force * weightStrength : 500; state.targetItalic = italic ? -force * 7 : 0; state.width += (state.targetWidth - state.width) * 0.12; state.weight += (state.targetWeight - state.weight) * 0.12; state.italic += (state.targetItalic - state.italic) * 0.12; letter.style.fontVariationSettings = `'wdth' ${state.width}, 'wght' ${state.weight}, 'slnt' ${state.italic}` }); animation = requestAnimationFrame(frame) }
-    animation = requestAnimationFrame(frame)
-    return () => { observer.disconnect(); cancelAnimationFrame(animation) }
-  }, [sharedCursor, italic, minFontSize, text, weight, weightStrength, width, widthStrength])
-  const move = (event: React.PointerEvent<HTMLDivElement>) => { mouseRef.current = { x: event.clientX, y: event.clientY } }; const leave = () => { mouseRef.current = { x: -1000, y: -1000 } }
-  return <div ref={rootRef} className={`text-pressure${flex ? ' text-pressure--flex' : ''}`} onPointerMove={sharedCursor ? undefined : move} onPointerLeave={sharedCursor ? undefined : leave} style={{ color: textColor, WebkitTextStroke: stroke ? `1px ${strokeColor}` : undefined, opacity: alpha ? 0.9 : 1 }}>{[...text].map((letter, index) => <span className="text-pressure__letter" key={`${letter}-${index}`} ref={(node) => { letterRefs.current[index] = node }}>{letter}</span>)}</div>
+    const root = rootRef.current
+    if (!root) return
+
+    const finePointer = window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)')
+    let measureFrame = 0
+    let settleFrame = 0
+    let animationFrame = 0
+
+    const resetLetters = () => {
+      letterRefs.current.forEach((letter) => {
+        if (!letter) return
+        letter.style.fontVariationSettings = `'wght' ${BASE_WEIGHT}, 'wdth' ${BASE_WIDTH}, 'slnt' 0`
+        letter.style.opacity = '1'
+      })
+    }
+
+    const cacheMetrics = () => {
+      const rect = root.getBoundingClientRect()
+      metricsRef.current = {
+        centers: letterRefs.current.map((letter) => {
+          if (!letter) return { x: -1000, y: -1000 }
+          const letterRect = letter.getBoundingClientRect()
+          return { x: letterRect.left + letterRect.width / 2, y: letterRect.top + letterRect.height / 2 }
+        }),
+        maxDistance: Math.max(1, rect.width / 2),
+        strengthScale: rect.width < 560 ? 0.76 : rect.width < 900 ? 0.88 : 1,
+      }
+    }
+
+    const measure = () => {
+      const rect = root.getBoundingClientRect()
+      resetLetters()
+      root.style.setProperty('--text-pressure-size', '100px')
+
+      cancelAnimationFrame(settleFrame)
+      settleFrame = requestAnimationFrame(() => {
+        const baseWidth = letterRefs.current.reduce((total, letter) => total + (letter?.getBoundingClientRect().width ?? 0), 0)
+        const widthLimitedSize = baseWidth > 0 ? (rect.width * 0.8 * 100) / baseWidth : minFontSize
+        const fontSize = Math.max(minFontSize, Math.min(widthLimitedSize, rect.height * 0.72))
+        root.style.setProperty('--text-pressure-size', `${fontSize}px`)
+        settleFrame = requestAnimationFrame(cacheMetrics)
+      })
+    }
+
+    const scheduleMeasure = () => {
+      cancelAnimationFrame(measureFrame)
+      measureFrame = requestAnimationFrame(measure)
+    }
+
+    const observer = new ResizeObserver(scheduleMeasure)
+    observer.observe(root)
+    scheduleMeasure()
+    document.fonts?.ready.then(scheduleMeasure).catch(() => undefined)
+
+    const animate = () => {
+      animationFrame = requestAnimationFrame(animate)
+
+      const shared = sharedCursor?.current
+      if (shared) {
+        targetPointerRef.current.x = shared.x
+        targetPointerRef.current.y = shared.y
+      }
+
+      // Same smoothing model as the original React Bits component.
+      smoothPointerRef.current.x += (targetPointerRef.current.x - smoothPointerRef.current.x) / 15
+      smoothPointerRef.current.y += (targetPointerRef.current.y - smoothPointerRef.current.y) / 15
+
+      const pointerActive = shared ? Boolean(shared.active) : localPointerRef.current.active
+      const pointerType = shared?.pointerType ?? localPointerRef.current.pointerType
+      const pressureEnabled = pointerActive && (finePointer.matches || pointerType === 'touch' || pointerType === 'pen')
+      const metrics = metricsRef.current
+
+      letterRefs.current.forEach((letter, index) => {
+        const center = metrics.centers[index]
+        if (!letter || !center) return
+
+        const distance = pressureEnabled ? distanceBetween(smoothPointerRef.current, center) : metrics.maxDistance
+        const rawWidth = clamp(getAttribute(distance, metrics.maxDistance, BASE_WIDTH, MAX_WIDTH - BASE_WIDTH), BASE_WIDTH, MAX_WIDTH)
+        const rawWeight = clamp(getAttribute(distance, metrics.maxDistance, BASE_WEIGHT, MAX_WEIGHT - BASE_WEIGHT), BASE_WEIGHT, MAX_WEIGHT)
+        const wdth = width ? BASE_WIDTH + (rawWidth - BASE_WIDTH) * metrics.strengthScale : BASE_WIDTH
+        const wght = weight ? BASE_WEIGHT + (rawWeight - BASE_WEIGHT) * metrics.strengthScale : BASE_WEIGHT
+        const ital = italic ? clamp(getAttribute(distance, metrics.maxDistance, 0, 1), 0, 1) : 0
+        const opacity = alpha ? clamp(getAttribute(distance, metrics.maxDistance, 0, 1), 0, 1) : 1
+
+        letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'slnt' ${-ital * 7}`
+        letter.style.opacity = `${opacity}`
+      })
+    }
+
+    animationFrame = requestAnimationFrame(animate)
+    return () => {
+      observer.disconnect()
+      cancelAnimationFrame(measureFrame)
+      cancelAnimationFrame(settleFrame)
+      cancelAnimationFrame(animationFrame)
+    }
+  }, [alpha, italic, minFontSize, sharedCursor, text, weight, width])
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (sharedCursor) return
+    targetPointerRef.current = { x: event.clientX, y: event.clientY }
+    localPointerRef.current = { active: true, pointerType: event.pointerType }
+  }
+  const resetLocalPointer = () => {
+    if (sharedCursor) return
+    targetPointerRef.current = { x: -1000, y: -1000 }
+    localPointerRef.current = { active: false, pointerType: '' }
+  }
+
+  return <div
+    ref={rootRef}
+    className="text-pressure"
+    aria-label={text}
+    onPointerMove={handlePointerMove}
+    onPointerLeave={resetLocalPointer}
+    onPointerUp={resetLocalPointer}
+    onPointerCancel={resetLocalPointer}
+    style={{
+      '--text-pressure-color': textColor,
+      '--text-pressure-stroke': stroke ? `1px ${strokeColor}` : '0 transparent',
+    } as CSSProperties}
+  >
+    <span className={`text-pressure__row${flex ? ' text-pressure__row--flex' : ''}`} aria-hidden="true">
+      {[...text].map((letter, index) => <span
+        className="text-pressure__letter"
+        key={`${letter}-${index}`}
+        ref={(node) => { letterRefs.current[index] = node }}
+      >{letter}</span>)}
+    </span>
+  </div>
 }

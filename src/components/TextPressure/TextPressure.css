@@ -1,5 +1,39 @@
 @import '@fontsource-variable/roboto-flex/full.css';
-.text-pressure { display: inline-flex; inline-size: 100%; block-size: 100%; align-items: center; justify-content: center; overflow: hidden; font-family: 'Roboto Flex Variable', sans-serif; font-size: var(--text-pressure-size, 10rem); font-optical-sizing: auto; font-variation-settings: 'wdth' 100, 'wght' 500, 'slnt' 0; line-height: 0.8; touch-action: pan-y; user-select: none; white-space: nowrap; }
-.text-pressure--flex { display: flex; }
-.text-pressure__letter { display: inline-block; font-variation-settings: 'wdth' 100, 'wght' 500, 'slnt' 0; will-change: font-variation-settings; }
-@media (pointer: coarse), (prefers-reduced-motion: reduce) { .text-pressure { touch-action: pan-y; } }
+
+.text-pressure {
+  display: grid;
+  inline-size: 100%;
+  block-size: 100%;
+  place-items: center;
+  overflow: visible;
+  color: var(--text-pressure-color, rgb(255 255 255 / 0.82));
+  font-family: 'Roboto Flex Variable', sans-serif;
+  font-size: var(--text-pressure-size, 8rem);
+  font-optical-sizing: auto;
+  line-height: 0.82;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.text-pressure__row {
+  display: inline-flex;
+  inline-size: 100%;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.text-pressure__row--flex {
+  justify-content: space-between;
+}
+
+.text-pressure__letter {
+  display: inline-block;
+  flex: 0 0 auto;
+  color: var(--text-pressure-color, rgb(255 255 255 / 0.82));
+  font-variation-settings: 'wght' 600, 'wdth' 100, 'slnt' 0;
+  -webkit-text-stroke: var(--text-pressure-stroke, 0 transparent);
+  transform: none;
+  transform-origin: center;
+  will-change: font-variation-settings;
+  pointer-events: auto;
+}

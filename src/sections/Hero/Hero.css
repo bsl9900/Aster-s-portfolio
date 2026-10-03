@@ -15,40 +15,45 @@
   content: '';
 }
 
-.hero-section__ripple { z-index: 2; pointer-events: none; }
+.hero-floating { z-index: 10; }
+.hero-section__ripple { z-index: 30; pointer-events: none; }
 
-.hero-section__content {
-  position: relative;
-  z-index: 3;
+.hero-title-layer {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
   display: grid;
-  min-block-size: calc(100svh - clamp(2rem, 8vw, 8rem));
   place-items: center;
+  pointer-events: none;
 }
 
-.hero-section__title {
-  inline-size: min(100%, 110rem);
-  block-size: clamp(15rem, 38vw, 38rem);
+.hero-title-shell {
+  inline-size: min(66vw, 65.625rem);
+  block-size: clamp(12rem, 22vw, 26rem);
   margin: 0;
+  contain: layout style;
+  pointer-events: none;
+}
+
+/* The legacy computer remains mounted for a quick future restore, but stays hidden. */
+.hero-section--floating-only .hero-computer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hero-title-shell .text-pressure {
+  filter: drop-shadow(0 0 12px rgb(70 170 255 / 0.55)) drop-shadow(0 0 28px rgb(80 180 255 / 0.28));
+}
+
+.hero-title-shell .text-pressure__letter {
+  color: rgb(255 255 255 / 0.82);
+  text-shadow: 0 0 12px rgb(70 170 255 / 0.55), 0 0 28px rgb(80 180 255 / 0.28);
   cursor: pointer;
-}
-
-.hero-section__title .text-pressure {
-  filter: drop-shadow(0 0 4px rgb(255 255 255 / 0.82)) drop-shadow(0 0 15px rgb(80 180 255 / 0.55)) drop-shadow(0 0 40px rgb(80 180 255 / 0.35));
-}
-
-.hero-section__title .text-pressure__letter {
-  background: linear-gradient(180deg, #f4fdff 0%, #bcecff 26%, #76c8ff 59%, #3c91ed 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  opacity: 0.88;
-  text-shadow: 0 0 2px rgb(255 255 255 / 0.92), 0 0 10px rgb(186 232 255 / 0.7), 0 0 22px rgb(80 180 255 / 0.42);
 }
 
 .hero-computer {
   position: absolute;
-  z-index: 4;
+  z-index: 40;
   inset: 0;
   display: grid;
   place-items: center;
@@ -74,7 +79,6 @@
 
 @media (max-width: 700px) {
   .hero-section { padding: 1rem; }
-  .hero-section__content { min-block-size: calc(100svh - 2rem); }
-  .hero-section__title { inline-size: 100%; block-size: clamp(10rem, 48vw, 22rem); }
+  .hero-title-shell { inline-size: 86vw; block-size: clamp(8rem, 30vw, 14rem); }
   .hero-computer__float { inline-size: clamp(11rem, 52vw, 25rem); max-inline-size: 80%; }
 }
