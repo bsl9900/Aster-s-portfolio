@@ -24,6 +24,7 @@ type RippleDistortionProps = {
   clickStrength?: number
   quality?: RippleQuality
   enabled?: boolean
+  overlay?: boolean
   coverPosition?: [number, number]
   className?: string
   onReady?: () => void
@@ -66,7 +67,7 @@ varying vec2 vUv;
 uniform sampler2D uTexture; uniform sampler2D uDisplacement;
 uniform vec2 uResolution; uniform vec2 uTextureSize; uniform vec2 uTexel; uniform vec2 uCoverPosition;
 uniform vec3 uTint; uniform vec3 uHighlight;
-uniform float uStrength; uniform float uSwirl; uniform float uDispersion; uniform float uGlint; uniform float uTintAmount; uniform float uGrayscale;
+uniform float uStrength; uniform float uSwirl; uniform float uDispersion; uniform float uGlint; uniform float uTintAmount; uniform float uGrayscale; uniform float uOverlay;
 const float TAU = 6.283185307179586;
 vec2 coverUV(vec2 uv) {
   vec2 safe = max(uTextureSize, vec2(1.0)); vec2 s = uResolution / safe;
@@ -92,7 +93,8 @@ void main() {
     float raw = pow(max(dot(normal, light), 0.0), 22.0); float flatSpec = pow(max(light.z, 0.0), 22.0);
     color += uHighlight * clamp((raw - flatSpec) / max(1.0 - flatSpec, 0.0001), 0.0, 1.0) * uGlint;
   }
-  gl_FragColor = vec4(color, 1.0);
+  float alpha = uOverlay > 0.5 ? clamp(amount * 1.25, 0.0, 0.72) : 1.0;
+  gl_FragColor = vec4(color, alpha);
 }
 `
 
@@ -124,6 +126,7 @@ export function RippleDistortion({
   clickStrength = 2,
   quality = 'low',
   enabled = true,
+  overlay = false,
   coverPosition = [0.5, 0.5],
   className = '',
   onReady,
@@ -184,7 +187,7 @@ export function RippleDistortion({
       uTextureSize: { value: [1, 1] }, uTexel: { value: [1, 1] }, uCoverPosition: { value: coverPosition },
       uTint: { value: hexToRgb(tint) }, uHighlight: { value: hexToRgb(highlightColor) }, uStrength: { value: strength },
       uSwirl: { value: swirl }, uDispersion: { value: dispersion }, uGlint: { value: glint },
-      uTintAmount: { value: tintAmount }, uGrayscale: { value: grayscale ? 1 : 0 },
+      uTintAmount: { value: tintAmount }, uGrayscale: { value: grayscale ? 1 : 0 }, uOverlay: { value: overlay ? 1 : 0 },
     }
     const compositeMesh = new Mesh(gl, { geometry: new Triangle(gl), program: new Program(gl, { vertex: screenVertex, fragment: compositeFragment, uniforms: compositeUniforms, depthTest: false, depthWrite: false }) })
     uniformsRef.current = { wave: waveUniforms, composite: compositeUniforms }
@@ -283,7 +286,7 @@ export function RippleDistortion({
       if (canvas.parentNode === mount) mount.removeChild(canvas)
       gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
-  }, [src, quality, enabled, coverPosition, onError, onReady])
+  }, [src, quality, enabled, coverPosition, overlay, onError, onReady])
 
   useEffect(() => {
     const uniforms = uniformsRef.current

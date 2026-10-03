@@ -1,0 +1,32 @@
+.hero-floating {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+
+.hero-floating__item {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: block;
+  inline-size: var(--floating-size-desktop);
+  transform-origin: center;
+  will-change: transform;
+}
+
+.hero-floating__image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 1199px) {
+  .hero-floating__item { inline-size: var(--floating-size-tablet); }
+}
+
+@media (max-width: 767px) {
+  .hero-floating__item { inline-size: var(--floating-size-mobile); }
+}
