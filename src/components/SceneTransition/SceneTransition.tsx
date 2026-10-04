@@ -16,7 +16,7 @@ export function SceneTransition({ direction, onCovered, onComplete }: SceneTrans
   useEffect(() => {
     const foreground = direction === 'forward'
       ? document.querySelector<HTMLElement>('.hero-section')
-      : ['.about-section', '.contents-section', '.experience-section', '.projects-section', '.personal-archive-section', '.contact-section']
+      : ['.about-section', '.contents-section', '.experience-section', '.projects-section', '.contact-section']
         .map((selector) => document.querySelector<HTMLElement>(selector))
         .find((section) => {
           if (!section) return false

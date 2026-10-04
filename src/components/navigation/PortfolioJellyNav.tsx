@@ -3,11 +3,17 @@ import { useEffect, useState } from 'react'
 import { JellyRadio, JellyRadioItem } from './JellyRadio'
 import './PortfolioJellyNav.css'
 
-const items: JellyRadioItem[] = [{ value: 'start', label: 'START' }, { value: 'about', label: 'ABOUT' }, { value: 'experience', label: 'EXPERIENCE' }, { value: 'projects', label: 'PROJECTS' }, { value: 'archive', label: 'ARCHIVE' }, { value: 'contact', label: 'CONTACT' }]
-const targets = { start: '.hero-section', about: '.about-section', experience: '.experience-section', projects: '.projects-section', archive: '.personal-archive-section', contact: '.contact-section' } as const
+const items: JellyRadioItem[] = [{ value: 'start', label: 'START' }, { value: 'about', label: 'ABOUT' }, { value: 'projects', label: 'PROJECTS' }, { value: 'experience', label: 'EXPERIENCE' }, { value: 'contact', label: 'CONTACT' }]
+const targets = { start: '.hero-section', about: '.about-section', projects: '#projects', experience: '.experience-section', contact: '.contact-section' } as const
 
 export function PortfolioJellyNav() {
-  const visible = true; const [active, setActive] = useState('about'); const reducedMotion = useReducedMotion()
+  const [modalVisible, setModalVisible] = useState(false); const [active, setActive] = useState('about'); const reducedMotion = useReducedMotion()
+  const visible = !modalVisible
+  useEffect(() => {
+    const updateModalVisibility = (event: Event) => setModalVisible(Boolean((event as CustomEvent<{ visible?: boolean }>).detail?.visible))
+    window.addEventListener('portfolio:modal-visibility', updateModalVisibility)
+    return () => window.removeEventListener('portfolio:modal-visibility', updateModalVisibility)
+  }, [])
   useEffect(() => {
     const sections = items.flatMap((item) => {
       const section = document.querySelector<HTMLElement>(targets[item.value as keyof typeof targets])
