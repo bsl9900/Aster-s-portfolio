@@ -29,7 +29,7 @@ const chapters: DirectoryChapter[] = [
   },
   {
     id: '03', title: '音乐能量岛小游戏运营活动视觉设计', subtitle: '游戏化运营 + AIGC', card: `${assetRoot}chapter-03.png`,
-    detailImages: projectImages('project-03', ['1.3无卡.png', '3.2.jpg', '3.3.jpg', '3.4.jpg', '3.5.jpg', '3.6.jpg', '3.7.jpg', '3.8.jpg', '3.9.jpg']),
+    detailImages: projectImages('project-03', ['3.1无卡.png', '3.2.jpg', '3.3.jpg', '3.4.jpg', '3.5.jpg', '3.6.jpg', '3.7.jpg', '3.8.jpg', '3.9.jpg']),
   },
   {
     id: '04', title: '设计之外 AI探索 + 审美摄影', subtitle: 'AIGC + 兴趣爱好', card: `${assetRoot}chapter-04.png`,
