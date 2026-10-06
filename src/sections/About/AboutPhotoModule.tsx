@@ -77,7 +77,7 @@ export function AboutPhotoModule() {
       onPointerUp={toggleGridForTouch}
       onKeyDown={toggleGridFromKeyboard}
     >
-      <img className="about-photo__card-image" src={photoCard} alt="Aster portrait verification card" draggable={false} />
+      <img className="about-photo__card-image" src={photoCard} alt="Aster portrait verification card" loading="eager" fetchPriority="high" decoding="async" draggable={false} />
       <span
         className="about-photo__header-background"
         style={{ backgroundImage: `url(${headerBackground})` }}

@@ -41,6 +41,7 @@ export function Contents() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalMaximized, setIsModalMaximized] = useState(false)
+  const [loadedCards, setLoadedCards] = useState<Record<string, boolean>>({})
   const reducedMotion = useReducedMotion()
   const chapter = chapters[currentIndex]
 
@@ -53,6 +54,24 @@ export function Contents() {
     setIsModalOpen(false)
     setIsModalMaximized(false)
   }
+
+  // Warm the chapter artwork early: cross-border visitors otherwise stare at an
+  // empty phone screen the first time each chapter is opened.
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 200))
+    const handle = idle(() => {
+      chapters.forEach((item) => {
+        const image = new Image()
+        image.src = item.card
+      })
+    })
+    return () => {
+      if (window.cancelIdleCallback && typeof handle === 'number') window.cancelIdleCallback(handle)
+      else window.clearTimeout(handle as number)
+    }
+  }, [])
+
+  const markCardLoaded = (id: string) => setLoadedCards((current) => (current[id] ? current : { ...current, [id]: true }))
 
   useEffect(() => {
     if (!isModalOpen) return
@@ -84,8 +103,9 @@ export function Contents() {
           <img className="contents-section__phone-frame" src={`${assetRoot}phone-frame.png`} alt="银色手机作品集目录" draggable={false} />
           <span className="contents-section__screen">
             <AnimatePresence mode="wait" initial={false}>
-              <motion.img className="contents-section__card" key={chapter.id} src={chapter.card} alt={`#${chapter.id} ${chapter.title}（${chapter.subtitle}）`} initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: 18, scale: 0.985 }} animate={{ opacity: 1, x: 0, scale: 1 }} exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -18, scale: 0.985 }} transition={{ duration: reducedMotion ? 0.12 : 0.28, ease: [0.22, 1, 0.36, 1] }} draggable={false} />
+              <motion.img className={`contents-section__card${loadedCards[chapter.id] ? '' : ' is-pending'}`} key={chapter.id} src={chapter.card} alt={`#${chapter.id} ${chapter.title}（${chapter.subtitle}）`} onLoad={() => markCardLoaded(chapter.id)} decoding="async" initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: 18, scale: 0.985 }} animate={{ opacity: 1, x: 0, scale: 1 }} exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -18, scale: 0.985 }} transition={{ duration: reducedMotion ? 0.12 : 0.28, ease: [0.22, 1, 0.36, 1] }} draggable={false} />
             </AnimatePresence>
+            {!loadedCards[chapter.id] && <span className="contents-section__card-placeholder" aria-hidden="true" />}
           </span>
         </button>
       </div>

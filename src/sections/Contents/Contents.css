@@ -65,6 +65,23 @@
 .contents-section__phone-frame { position: absolute; z-index: 2; inset: 0; display: block; inline-size: 100%; block-size: 100%; object-fit: contain; pointer-events: none; user-select: none; }
 .contents-section__screen { position: absolute; z-index: 1; inset-inline-start: 14.35%; inset-block-start: 15.35%; display: grid; inline-size: 72.3%; block-size: 53.55%; place-items: center; overflow: hidden; background: #f7f7f7; }
 .contents-section__card { display: block; max-inline-size: 96%; max-block-size: 96%; inline-size: auto; block-size: auto; object-fit: contain; pointer-events: none; user-select: none; }
+/* Keep the artwork invisible until its bytes arrive so the phone never flashes an empty screen. */
+.contents-section__card.is-pending { opacity: 0; }
+.contents-section__card-placeholder {
+  position: absolute;
+  z-index: 0;
+  display: block;
+  inline-size: 34px;
+  block-size: 34px;
+  border: 2px solid rgb(47 51 56 / 15%);
+  border-block-start-color: #45494f;
+  border-radius: 50%;
+  animation: contents-card-spin 900ms linear infinite;
+}
+@keyframes contents-card-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .contents-section__card-placeholder { animation-duration: 1800ms; }
+}
 
 .contents-section__arrow {
   display: grid;
