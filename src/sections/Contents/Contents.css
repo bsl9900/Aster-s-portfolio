@@ -239,3 +239,43 @@
   .contents-section__modal,
   .contents-section__section-nav-item { transition: none; }
 }
+
+/* Reading progress for long chapter image stacks (cross-border latency is high). */
+.project-detail-progress {
+  position: absolute;
+  z-index: 6;
+  inset-block-end: 1rem;
+  inset-inline: 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  padding-inline: 1rem;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 260ms ease;
+}
+.project-detail-progress.is-done { opacity: 0; }
+.project-detail-progress__bar {
+  inline-size: min(240px, 62%);
+  block-size: 3px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 34%);
+  overflow: hidden;
+}
+.project-detail-progress__bar > i {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: #f4f8ff;
+  transition: inline-size 220ms ease;
+}
+.project-detail-progress__label {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgb(255 255 255 / 92%);
+  text-shadow: 0 1px 3px rgb(9 18 32 / 55%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-detail-progress,
+  .project-detail-progress__bar > i { transition: none; }
+}
