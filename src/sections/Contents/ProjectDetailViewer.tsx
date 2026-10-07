@@ -28,14 +28,6 @@ const touchDistance = (touches: TouchList) => Math.hypot(touches[1].clientX - to
 
 export function ProjectDetailViewer({ images, projectId, sections, title }: ProjectDetailViewerProps) {
   const initialImage = useInitialProjectImage(images[0])
-  // Track how many detail images have finished loading so the reader knows
-  // how far along the chapter is instead of staring at an apparently blank column.
-  const [loadedCount, setLoadedCount] = useState(0)
-  const totalImages = images.length
-  // The first image is also counted through onLoad, so treat the bar as complete
-  // only once every image has reported in.
-  const progressDone = totalImages > 0 && loadedCount >= totalImages
-  const progressPercent = totalImages > 0 ? Math.round((loadedCount / totalImages) * 100) : 0
   const viewportRef = useRef<HTMLDivElement>(null)
   const surfaceRef = useRef<HTMLDivElement>(null)
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
@@ -318,7 +310,6 @@ export function ProjectDetailViewer({ images, projectId, sections, title }: Proj
                 alt={`${title}详情第 ${absoluteIndex + 1} 页`}
                 loading={absoluteIndex === 0 ? 'eager' : 'lazy'}
                 fetchPriority={absoluteIndex === 0 ? 'high' : 'auto'}
-                onLoad={() => setLoadedCount((count) => Math.min(count + 1, totalImages))}
                 draggable={false}
                 key={absoluteIndex === 0 ? initialImage.src : image}
               />
@@ -334,10 +325,6 @@ export function ProjectDetailViewer({ images, projectId, sections, title }: Proj
       <button type="button" onClick={initialImage.retry} aria-label="首图加载失败，点击重试" title="重试加载">
         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5" /><path d="M5.1 8a8 8 0 0 1 13.2-2L20 8M4 16l1.7 2A8 8 0 0 0 18.9 16" /></svg>
       </button>
-    </div>}
-    {totalImages > 1 && <div className={`project-detail-progress${progressDone ? ' is-done' : ''}`} role="status" aria-live="polite">
-      <div className="project-detail-progress__bar" aria-hidden="true"><i style={{ inlineSize: `${progressPercent}%` }} /></div>
-      <span className="project-detail-progress__label">{progressDone ? `${totalImages} 张已全部加载` : `正在加载第 ${Math.max(loadedCount + 1, 1)} / ${totalImages} 张`}</span>
     </div>}
   </div>
 }
