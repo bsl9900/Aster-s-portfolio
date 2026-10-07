@@ -28,6 +28,11 @@ const touchDistance = (touches: TouchList) => Math.hypot(touches[1].clientX - to
 
 export function ProjectDetailViewer({ images, projectId, sections, title }: ProjectDetailViewerProps) {
   const initialImage = useInitialProjectImage(images[0])
+  // Count finished detail images so the existing spinner can show "3 / 22" while
+  // a chapter loads; a chapter with several images downloads them one by one on
+  // a slow link and readers otherwise have no idea whether anything is coming.
+  const [loadedCount, setLoadedCount] = useState(0)
+  const totalImages = images.length
   const viewportRef = useRef<HTMLDivElement>(null)
   const surfaceRef = useRef<HTMLDivElement>(null)
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
@@ -310,6 +315,7 @@ export function ProjectDetailViewer({ images, projectId, sections, title }: Proj
                 alt={`${title}详情第 ${absoluteIndex + 1} 页`}
                 loading={absoluteIndex === 0 ? 'eager' : 'lazy'}
                 fetchPriority={absoluteIndex === 0 ? 'high' : 'auto'}
+                onLoad={() => setLoadedCount((count) => Math.min(count + 1, totalImages))}
                 draggable={false}
                 key={absoluteIndex === 0 ? initialImage.src : image}
               />
@@ -320,6 +326,7 @@ export function ProjectDetailViewer({ images, projectId, sections, title }: Proj
     </div>
     <div className={`project-detail-loading${initialImage.state === 'loading' ? ' is-visible' : ''}`} role="status" aria-label={initialImage.state === 'loading' ? '正在加载项目内容' : undefined} aria-hidden={initialImage.state !== 'loading'}>
       <span className="project-detail-loading__spinner" aria-hidden="true" />
+      {totalImages > 1 && <span className="project-detail-loading__count" aria-hidden="true">{loadedCount} / {totalImages}</span>}
     </div>
     {initialImage.state === 'error' && <div className="project-detail-load-error">
       <button type="button" onClick={initialImage.retry} aria-label="首图加载失败，点击重试" title="重试加载">
